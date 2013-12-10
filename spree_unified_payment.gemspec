@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
-  s.name = "spree_unified_gateway"
+  s.name = "spree_unified_payment"
   s.version = "2.0.3"
   s.summary = "Integrate payment using UnifiedPayment service"
 
