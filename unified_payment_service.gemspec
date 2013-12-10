@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
-  s.name = "unified_payment"
+  s.name = "unified_payment_service"
   s.version = "2.0.3"
   s.summary = "Integrate payment using UnifiedPayment service"
 

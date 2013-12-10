@@ -1,0 +1,3 @@
+module UnifiedPaymentService end
+require 'unified_payment_client'
+require 'unified_payment_utility'
