@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.requirements << 'none'
 
   s.add_dependency 'spree_core'
+  s.add_dependency 'unified_payment'
   s.add_development_dependency 'database_cleaner'
   s.add_development_dependency 'rspec-rails',  '~> 2.10'
 end
