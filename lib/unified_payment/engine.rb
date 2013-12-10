@@ -1,4 +1,4 @@
-module SpreeUnifiedGateway
+module UnifiedPayment
   class Engine < Rails::Engine
     engine_name 'unified_payment'
 
