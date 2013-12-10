@@ -9,6 +9,10 @@ Gem::Specification.new do |s|
   s.author = "Manish Kangia"
   s.email = "manish.kangia@vinsol.com"
 
+  s.files = `git ls-files`.split("\n")
+  s.require_path = 'lib'
+  s.requirements << 'none'
+
   s.add_dependency 'spree_core'
   s.add_development_dependency 'database_cleaner'
   s.add_development_dependency 'rspec-rails',  '~> 2.10'
