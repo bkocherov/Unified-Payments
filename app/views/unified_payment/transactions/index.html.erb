@@ -1,0 +1,20 @@
+<table>
+  <thead>
+    <tr>
+      <th>Gateway Session Id</th>
+      <th>Gateway Order Id</th>
+      <th>Url</th>
+      <th>Merchant Id</th>
+      <th>Approval Code</th>
+    </tr>
+  </thead>
+  <% UnifiedPayment::Transaction.all.each do |transaction| %>
+    <tr>
+      <td><%= transaction.gateway_session_id %></td>
+      <td><%= transaction.gateway_order_id %></td>
+      <td><%= transaction.url %></td>
+      <td><%= transaction.merchant_id %></td>
+      <td><%= transaction.approval_code %></td>
+    </tr>
+  <% end %>
+</table>
