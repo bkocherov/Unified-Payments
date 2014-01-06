@@ -6,6 +6,7 @@ module UnifiedPayment
       3.times do |attempt|
         begin
           @response = Client.create_order(amount, options)
+          UnifiedPayment::Transaction.create(:url => @response['url'], :gateway_order_id => @response['orderId'], :gateway_session_id => @response['sessionId'])
           break
         rescue
           @response = false

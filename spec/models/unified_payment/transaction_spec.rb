@@ -25,19 +25,24 @@ describe UnifiedPayment::Transaction do
         end
       end
 
-      context 'when order is create successfully' do
+      context 'when order is created successfully' do
         before do
-          UnifiedPayment::Client.stub(:create_order).and_return('my-response')
+          UnifiedPayment::Client.stub(:create_order).and_return({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
         end
 
         it 'calls to client only once' do
-          UnifiedPayment::Client.should_receive(:create_order).and_return('my-response')
+          UnifiedPayment::Client.should_receive(:create_order).and_return({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
+          unified_payment.create_order_at_unified(200, {})
+        end
+
+        it 'creates a unified transaction entry' do
+          UnifiedPayment::Transaction.should_receive(:create).with({ :url => 'https://mpi.valucardnigeria.com:443/index.jsp', :gateway_order_id => '12345', :gateway_session_id => '040C78AA2FACF4B1164EDAA27BB281A7'})
           unified_payment.create_order_at_unified(200, {})
         end
 
         it 'sets response' do
           unified_payment.create_order_at_unified(200, {})
-          unified_payment.instance_eval('@response').should eq('my-response')
+          unified_payment.instance_eval('@response').should eq({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
         end
       end
     end
