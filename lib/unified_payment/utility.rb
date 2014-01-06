@@ -5,7 +5,7 @@ module UnifiedPayment
     def create_order_at_unified(amount, options)
       3.times do |attempt|
         begin
-          @response = Client.create_order(amount, { :approve_url => options[:approve_url], :cancel_url => options[:cancel_url], :decline_url => options[:decline_url] }) 
+          @response = Client.create_order(amount, options)
           break
         rescue
           @response = false
