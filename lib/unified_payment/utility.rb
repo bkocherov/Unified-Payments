@@ -2,16 +2,16 @@ module UnifiedPayment
   module Utility
     require 'unified_payment/client'
 
-    def create_order_at_unified(amount)
+    def create_order_at_unified(amount, options)
       3.times do |attempt|
         begin
-          @response = Client.create_order(amount, { :approve_url => "#{root_url}pay_by_cards/approved", :cancel_url => "#{root_url}pay_by_cards/canceled", :decline_url => "#{root_url}pay_by_cards/declined" }) 
+          @response = Client.create_order(amount, { :approve_url => options[:approve_url], :cancel_url => options[:cancel_url], :decline_url => options[:decline_url] }) 
           break
         rescue
-          flash[:error] = "Could not create payment at unified, please pay by other methods or try again later."
+          @response = false
         end
       end
-      @response || false
+      @response
     end
 
     def extract_url_for_unified_payment(response)
