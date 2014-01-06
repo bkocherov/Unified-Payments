@@ -9,12 +9,12 @@ Gem::Specification.new do |s|
   s.version     = UnifiedPayment::VERSION
   s.authors     = ["Manish Kangia"]
   s.email       = ["manish.kangia@vinsol.com"]
-  s.homepage    = "TODO"
-  s.summary     = "Interface to handle payments via UnifiedPayment for rails app"
-  s.description = "TODO: Description of UnifiedPayment."
+  # s.homepage    = "TODO"
+  s.summary     = "Interface to handle payments via UnifiedPayment for rails app."
+  s.description = "Interface to handle payments via UnifiedPayment for rails app."
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
-  s.test_files = Dir["test/**/*"]
+  s.test_files = Dir["spec/**/*"]
 
   s.add_dependency "rails", "> 3.0"
 
