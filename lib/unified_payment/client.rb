@@ -21,11 +21,11 @@ module UnifiedPayment
 
   class Client
 
-    MERCHANT_NAME = 'WESTAYCUTE'
+    MERCHANT_NAME = UnifiedPayment.config[:merchant_name]
 
     include HTTParty
     format :xml
-    base_uri 'http://127.0.0.1:5555'
+    base_uri UnifiedPayment.config[:base_uri]
     
     # debug_output
     follow_redirects(50)
@@ -109,7 +109,7 @@ module UnifiedPayment
                   "orderId" => orderId,
                   "xml_response" => response }      
       else
-        raise UnifiedPaymentError.new("GetOrderStatus Failed", response)
+        raise Error.new("GetOrderStatus Failed", response)
       end
 
     end
@@ -131,10 +131,10 @@ module UnifiedPayment
       begin
         response = post('/Exec', :body => xml_builder.target! )
       rescue => e
-        raise UnifiedPaymentError.new("################### Unable to send Reverse request to Unified Payments Ltd " + e.message)
+        raise Error.new("################### Unable to send Reverse request to Unified Payments Ltd " + e.message)
       end
 
-      pp response
+      # pp response
 
       if response["TKKPG"]["Response"]["Status"] == "00"
         orderId = response["TKKPG"]["Response"]["Order"]["OrderID"]
@@ -146,7 +146,7 @@ module UnifiedPayment
                   "respMessage" => respMessage,
                   "xml_response" => response }
       else
-        raise UnifiedPaymentError.new("Reverse Request Failed", response)
+        raise Error.new("Reverse Request Failed", response)
       end
 
     end
