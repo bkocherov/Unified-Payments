@@ -14,7 +14,9 @@ module UnifiedPayment
   # Configure through yaml file
   def self.configure_with(path_to_yaml_file)
     config = YAML::load(IO.read(path_to_yaml_file))
-
+    global_config = config.select { |key, value| value.class != Hash } || {}
+    env_config = config[Rails.env] || {}
+    config = global_config.merge(env_config) 
     configure(config)
   end
 

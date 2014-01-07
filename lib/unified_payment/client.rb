@@ -34,123 +34,115 @@ module UnifiedPayment
       self["orderId"]
     end
 
-    def self.create_order(amount, options={})
+    def self.build_xml_for_create(amount, options)
       xml_builder = ::Builder::XmlMarkup.new
       xml_builder.instruct!
       xml_builder.TKKPG { |tkkpg|
         tkkpg.Request { |request|
           request.Operation("CreateOrder")
-          request.Language(options[:language] ? options[:language] : "EN")
+          request.Language(options[:language] || "EN")
           request.Order { |order|
             order.Merchant(MERCHANT_NAME)
             order.Amount(amount)
-            order.Currency(options[:currency] ? options[:currency] : "566")
-            order.Description(options[:description] ? options[:description] : "Test Order")
+            order.Currency(options[:currency] || "566")
+            order.Description(options[:description] || "Test Order")
             order.ApproveURL(options[:approve_url])
             order.CancelURL(options[:cancel_url])
             order.DeclineURL(options[:decline_url])
-            if options[:add_params]
-              order.AddParams do |ap|
-                ap.email(options[:add_params][:email]) if options[:add_params][:email]
-                ap.email(options[:add_params][:phone]) if options[:add_params][:phone]
+            if params_to_add = options[:add_params]
+              order.AddParams do |add_param|
+                add_param.email(params_to_add[:email]) if params_to_add[:email]
+                add_param.phone(params_to_add[:phone]) if params_to_add[:phone]
               end
             end
           }
         }
       }
+      xml_builder
+    end
+    
+    def self.send_request_for_create(amount, options)
+      xml_builder = build_xml_for_create(amount, options)
 
       begin
-        response = post('/Exec', :body => xml_builder.target!)
-      rescue => e
-        raise Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: " + e.message)
+        xml_response = post('/Exec', :body => xml_builder.target!)
+      rescue => exception
+        raise Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: " + exception.message)
       end
+      xml_response
+    end
 
-      if response["TKKPG"]["Response"]["Status"] == "00"
-        url = response["TKKPG"]["Response"]["Order"]["URL"]
-        orderId = response["TKKPG"]["Response"]["Order"]["OrderID"]
-        sessionId = response["TKKPG"]["Response"]["Order"]["SessionID"]
+    def self.create_order(amount, options={})
+      xml_response = send_request_for_create(amount, options)
+      response = xml_response["TKKPG"]["Response"]
+      if response["Status"] == "00"
+        response_order_details = response["Order"] 
 
-        return { "url"          => url,# + "?ORDERID=" + orderId + "&SESSIONID=" + sessionId,
-                 "sessionId"    => sessionId,
-                 "orderId"      => orderId,
-                 "xml_response" => response
+        return { "url"          => response_order_details["URL"],
+                 "sessionId"    => response_order_details["SessionID"],
+                 "orderId"      => response_order_details["OrderID"],
+                 "xml_response" => xml_response
                }
       else
         raise Error.new("CreateOrder Failed", response)
       end
-
     end
 
-    def self.get_order_status(orderId, sessionId)
+    def self.build_xml_for(operation, order_id, session_id)
       xml_builder = Builder::XmlMarkup.new
       xml_builder.instruct!
       xml_builder.TKKPG { |tkkpg|
         tkkpg.Request { |request|
-          request.Operation("GetOrderStatus")
+          request.Operation(operation)
           request.Language("EN")
           request.Order { |order|
             order.Merchant(MERCHANT_NAME)
-            order.OrderID(orderId) }
-          request.SessionID(sessionId)
+            order.OrderID(order_id) }
+          request.SessionID(session_id)
         }
       }
+      xml_builder
+    end
 
+    def self.send_request_for(operation, order_id, session_id)
+      xml_request = build_xml_for(operation, order_id, session_id)
       begin
-        response = post('/Exec', :body => xml_builder.target! )
-      rescue => e
-        raise Error.new("################### Unable to send get order status request to Unified Payments Ltd " + e.message)
+        response = post('/Exec', :body => xml_request.target! )
+      rescue => exception
+        raise Error.new("################### Unable to send " + operation + " request to Unified Payments Ltd " + exception.message)
       end
+      response
+    end
 
-      if response["TKKPG"]["Response"]["Status"] == "00"
-        orderId = response["TKKPG"]["Response"]["Order"]["OrderID"]
-        orderStatus = response["TKKPG"]["Response"]["Order"]["OrderStatus"]
+    def self.get_order_status(order_id, session_id)
+      xml_response = send_request_for("GetOrderStatus", order_id, session_id)
+      response = xml_response["TKKPG"]["Response"]
+
+      if response["Status"] == "00"
+        response_order_details = response["Order"] 
         
-        return { "orderStatus" => orderStatus,
-                  "orderId" => orderId,
-                  "xml_response" => response }      
+        return { "orderStatus" => response_order_details["OrderStatus"],
+                  "orderId" => response_order_details["OrderID"],
+                  "xml_response" => xml_response }      
       else
-        raise Error.new("GetOrderStatus Failed", response)
+        raise Error.new("GetOrderStatus Failed", xml_response)
       end
 
     end
 
-    def self.reverse(orderId, sessionId)
-      xml_builder = Builder::XmlMarkup.new
-      xml_builder.instruct!
-      xml_builder.TKKPG { |tkkpg|
-        tkkpg.Request { |request|
-          request.Operation("Reverse")
-          request.Language("EN")
-          request.Order { |order|
-            order.Merchant(MERCHANT_NAME)
-            order.OrderID(orderId) }
-          request.SessionID(sessionId)
-        }
-      }
-
-      begin
-        response = post('/Exec', :body => xml_builder.target! )
-      rescue => e
-        raise Error.new("################### Unable to send Reverse request to Unified Payments Ltd " + e.message)
-      end
-
-      # pp response
-
-      if response["TKKPG"]["Response"]["Status"] == "00"
-        orderId = response["TKKPG"]["Response"]["Order"]["OrderID"]
-        respCode = response["TKKPG"]["Response"]["Reversal"]["RespCode"]
-        respMessage = response["TKKPG"]["Response"]["Reversal"]["RespMessage"]
-
-        return { "orderId" => orderId,
-                  "respCode" => respCode,
-                  "respMessage" => respMessage,
-                  "xml_response" => response }
+    def self.reverse(order_id, session_id)
+      xml_response = send_request_for("Reverse", order_id, session_id)
+      response = xml_response["TKKPG"]["Response"]
+      if response["Status"] == "00"
+        response_order_id, response_reversal_details = response["Order"]["OrderID"], response["Reversal"]
+        
+        return { "orderId" => response_order_id,
+                  "respCode" => response_reversal_details["RespCode"],
+                  "respMessage" => response_reversal_details["RespMessage"],
+                  "xml_response" => xml_response }
       else
-        raise Error.new("Reverse Request Failed", response)
+        raise Error.new("Reverse Request Failed", xml_response)
       end
-
     end
-
   end
-
 end

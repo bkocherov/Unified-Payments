@@ -10,13 +10,41 @@ describe UnifiedPayment::Transaction do
   context 'utility methods' do
     describe '#create_order_at_unified' do
       context 'when order is not created successfully' do
-        before do
-          UnifiedPayment::Client.stub(:create_order).and_raise(UnifiedPayment::Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: Connection refused - connect(2)"))
+        context 'once' do
+          before do
+            UnifiedPayment::Client.stub(:create_order).once.and_raise(UnifiedPayment::Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: Connection refused - connect(2)") )
+            UnifiedPayment::Client.stub(:create_order).once.and_return({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
+          end
+          
+          it 'calls to client once' do
+            UnifiedPayment::Client.should_receive(:create_order).once.and_raise(UnifiedPayment::Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: Connection refused - connect(2)") )
+            UnifiedPayment::Client.should_receive(:create_order).once.and_return({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
+            unified_payment.create_order_at_unified(200, {})
+          end
         end
-        
-        it 'calls to client 3 times' do
-          UnifiedPayment::Client.should_receive(:create_order).exactly(3).times.and_raise(UnifiedPayment::Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: Connection refused - connect(2)"))
-          unified_payment.create_order_at_unified(200, {})
+
+        context 'twice' do
+          before do
+            UnifiedPayment::Client.stub(:create_order).twice.and_raise(UnifiedPayment::Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: Connection refused - connect(2)") )
+            UnifiedPayment::Client.stub(:create_order).once.and_return({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
+          end
+          
+          it 'calls to client twice' do
+            UnifiedPayment::Client.should_receive(:create_order).twice.and_raise(UnifiedPayment::Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: Connection refused - connect(2)") )
+            UnifiedPayment::Client.should_receive(:create_order).once.and_return({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
+            unified_payment.create_order_at_unified(200, {})
+          end
+        end
+
+        context 'thrice' do
+          before do
+            UnifiedPayment::Client.stub(:create_order).and_raise(UnifiedPayment::Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: Connection refused - connect(2)"))
+          end
+
+          it 'calls to client thrice' do
+            UnifiedPayment::Client.should_receive(:create_order).exactly(3).times.and_raise(UnifiedPayment::Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: Connection refused - connect(2)"))
+            unified_payment.create_order_at_unified(200, {})
+          end
         end
 
         it 'set response false' do
@@ -59,13 +87,13 @@ describe UnifiedPayment::Transaction do
       context 'when approved' do
         before { unified_payment.stub(:get_unified_order_status).and_return('APPROVED') }
 
-        it { unified_payment.approved_at_gateway?.should be_true }
+        it { unified_payment.should be_approved_at_gateway }
       end
 
       context 'when not approved' do
         before { unified_payment.stub(:get_unified_order_status).and_return('NOT-APPROVED') }
 
-        it { unified_payment.approved_at_gateway?.should be_false }
+        it { unified_payment.should_not be_approved_at_gateway }
       end
     end
 
