@@ -61,15 +61,18 @@ module UnifiedPayment
       xml_builder
     end
     
+    def self.ping_gateway_for(operation, xml_request)
+      begin
+        response = post('/Exec', :body => xml_request.target! )
+      rescue => exception
+        raise Error.new("################### Unable to send " + operation + " request to Unified Payments Ltd " + exception.message)
+      end
+      response
+    end
+
     def self.send_request_for_create(amount, options)
       xml_builder = build_xml_for_create(amount, options)
-
-      begin
-        xml_response = post('/Exec', :body => xml_builder.target!)
-      rescue => exception
-        raise Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: " + exception.message)
-      end
-      xml_response
+      ping_gateway_for('CreateOrder', xml_builder)
     end
 
     def self.create_order(amount, options={})
@@ -106,12 +109,7 @@ module UnifiedPayment
 
     def self.send_request_for(operation, order_id, session_id)
       xml_request = build_xml_for(operation, order_id, session_id)
-      begin
-        response = post('/Exec', :body => xml_request.target! )
-      rescue => exception
-        raise Error.new("################### Unable to send " + operation + " request to Unified Payments Ltd " + exception.message)
-      end
-      response
+      ping_gateway_for(operation, xml_request)
     end
 
     def self.get_order_status(order_id, session_id)

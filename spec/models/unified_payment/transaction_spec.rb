@@ -9,17 +9,43 @@ describe UnifiedPayment::Transaction do
   let(:unified_payment) { UnifiedPayment::Transaction.new }
   context 'utility methods' do
     describe '#create_order_at_unified' do
-      context 'when order is not created successfully' do
+      context 'attempt fails' do
+        context 'never' do
+          before do
+            UnifiedPayment::Client.stub(:create_order).and_return({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
+          end
+
+          it 'calls to client only once with no error raised' do
+            UnifiedPayment::Client.should_receive(:create_order).and_return({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
+            unified_payment.create_order_at_unified(200, {})
+          end
+
+          it 'creates a unified transaction entry' do
+            UnifiedPayment::Transaction.should_receive(:create).with({ :url => 'https://mpi.valucardnigeria.com:443/index.jsp', :gateway_order_id => '12345', :gateway_session_id => '040C78AA2FACF4B1164EDAA27BB281A7'})
+            unified_payment.create_order_at_unified(200, {})
+          end
+
+          it 'sets response' do
+            unified_payment.create_order_at_unified(200, {})
+            unified_payment.instance_eval('@response').should eq({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
+          end
+        end
+
         context 'once' do
           before do
             UnifiedPayment::Client.stub(:create_order).once.and_raise(UnifiedPayment::Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: Connection refused - connect(2)") )
             UnifiedPayment::Client.stub(:create_order).once.and_return({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
           end
           
-          it 'calls to client once' do
+          it 'calls to client twice with error raise once' do
             UnifiedPayment::Client.should_receive(:create_order).once.and_raise(UnifiedPayment::Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: Connection refused - connect(2)") )
             UnifiedPayment::Client.should_receive(:create_order).once.and_return({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
             unified_payment.create_order_at_unified(200, {})
+          end
+
+          it 'sets response' do
+            unified_payment.create_order_at_unified(200, {})
+            unified_payment.instance_eval('@response').should eq({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
           end
         end
 
@@ -29,10 +55,15 @@ describe UnifiedPayment::Transaction do
             UnifiedPayment::Client.stub(:create_order).once.and_return({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
           end
           
-          it 'calls to client twice' do
+          it 'calls to client thrice with error raise twice' do
             UnifiedPayment::Client.should_receive(:create_order).twice.and_raise(UnifiedPayment::Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: Connection refused - connect(2)") )
             UnifiedPayment::Client.should_receive(:create_order).once.and_return({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
             unified_payment.create_order_at_unified(200, {})
+          end
+
+          it 'sets response' do
+            unified_payment.create_order_at_unified(200, {})
+            unified_payment.instance_eval('@response').should eq({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
           end
         end
 
@@ -41,36 +72,15 @@ describe UnifiedPayment::Transaction do
             UnifiedPayment::Client.stub(:create_order).and_raise(UnifiedPayment::Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: Connection refused - connect(2)"))
           end
 
-          it 'calls to client thrice' do
+          it 'calls to client thrice with error raised thrice' do
             UnifiedPayment::Client.should_receive(:create_order).exactly(3).times.and_raise(UnifiedPayment::Error.new("Unable to send create order request to Unified Payments Ltd. ERROR: Connection refused - connect(2)"))
             unified_payment.create_order_at_unified(200, {})
           end
-        end
 
-        it 'set response false' do
-          unified_payment.create_order_at_unified(200, {})
-          unified_payment.instance_eval('@response').should be_false
-        end
-      end
-
-      context 'when order is created successfully' do
-        before do
-          UnifiedPayment::Client.stub(:create_order).and_return({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
-        end
-
-        it 'calls to client only once' do
-          UnifiedPayment::Client.should_receive(:create_order).and_return({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
-          unified_payment.create_order_at_unified(200, {})
-        end
-
-        it 'creates a unified transaction entry' do
-          UnifiedPayment::Transaction.should_receive(:create).with({ :url => 'https://mpi.valucardnigeria.com:443/index.jsp', :gateway_order_id => '12345', :gateway_session_id => '040C78AA2FACF4B1164EDAA27BB281A7'})
-          unified_payment.create_order_at_unified(200, {})
-        end
-
-        it 'sets response' do
-          unified_payment.create_order_at_unified(200, {})
-          unified_payment.instance_eval('@response').should eq({ 'url' => 'https://mpi.valucardnigeria.com:443/index.jsp', 'orderId' => '12345', 'sessionId' => '040C78AA2FACF4B1164EDAA27BB281A7'})
+          it 'sets response false' do
+            unified_payment.create_order_at_unified(200, {})
+            unified_payment.instance_eval('@response').should be_false
+          end
         end
       end
     end

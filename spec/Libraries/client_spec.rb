@@ -8,7 +8,7 @@ describe UnifiedPayment::Client do
     end
 
     context 'not able to reach gateway' do
-      it { expect { UnifiedPayment::Client.create_order(200)}.to raise_error(UnifiedPayment::Error, "Unable to send create order request to Unified Payments Ltd. ERROR: Connection refused - connect(2)") }
+      it { expect { UnifiedPayment::Client.create_order(200)}.to raise_error(UnifiedPayment::Error, "################### Unable to send CreateOrder request to Unified Payments Ltd Connection refused - connect(2)") }
     end
 
     context 'response status is not 00' do
@@ -91,6 +91,15 @@ describe UnifiedPayment::Client do
       it { expect { UnifiedPayment::Client.get_order_status(1086880, '740A7AB7EB527908EB9507154CFAD389') }.to raise_error(UnifiedPayment::Error, 'GetOrderStatus Failed') }
     end
 
+    context 'response status is 00' do
+      before do
+        my_response = {"TKKPG"=>{"Response"=>{"Operation"=>"GetOrderStatus", "Status"=>"00", "Order"=>{"OrderID"=>"1086880", "OrderStatus"=>"CREATED"}}}}
+        UnifiedPayment::Client.stub(:post).with('/Exec', :body => @xml_builder.target!).and_return(my_response)
+      end
+
+      it { expect { UnifiedPayment::Client.get_order_status(1086880, '740A7AB7EB527908EB9507154CFAD389') }.not_to raise_error() }
+    end
+
     describe 'sends request along options' do
       before do
         my_response = {"TKKPG"=>{"Response"=>{"Operation"=>"GetOrderStatus", "Status"=>"00", "Order"=>{"OrderID"=>"1086880", "OrderStatus"=>"CREATED"}}}}
@@ -112,11 +121,20 @@ describe UnifiedPayment::Client do
   
     context 'response status is not 00' do
       before do
-        my_response = {"TKKPG"=>{"Response"=>{"Operation"=>"GetOrderStatus", "Status"=>"01", "Order"=>{"OrderID"=>"1086880", "OrderStatus"=>"CREATED"}}}}
+        my_response = {"TKKPG"=>{"Response"=>{"Operation"=>"GetOrderStatus", "Status"=>"01", "Order"=>{"OrderID"=>"1086880", "OrderStatus"=>"CREATED"}, "Reversal" => {'RespCode' => '876', 'RespMessage' => 'resp-message' }}}}
         UnifiedPayment::Client.stub(:post).with('/Exec', :body => @xml_builder.target!).and_return(my_response)
       end
 
       it { expect { UnifiedPayment::Client.reverse(1086880, '740A7AB7EB527908EB9507154CFAD389') }.to raise_error(UnifiedPayment::Error, 'Reverse Request Failed') }
+    end
+
+    context 'response status is 00' do
+      before do
+        my_response = {"TKKPG"=>{"Response"=>{"Operation"=>"GetOrderStatus", "Status"=>"00", "Order"=>{"OrderID"=>"1086880", "OrderStatus"=>"CREATED"}, "Reversal" => {'RespCode' => '876', 'RespMessage' => 'resp-message' }}}}
+        UnifiedPayment::Client.stub(:post).with('/Exec', :body => @xml_builder.target!).and_return(my_response)
+      end
+
+      it { expect { UnifiedPayment::Client.reverse(1086880, '740A7AB7EB527908EB9507154CFAD389') }.not_to raise_error() }
     end
 
     describe 'sends request along options' do
