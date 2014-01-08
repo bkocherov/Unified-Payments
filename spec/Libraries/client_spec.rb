@@ -98,6 +98,7 @@ describe UnifiedPayment::Client do
       end
 
       it { expect { UnifiedPayment::Client.get_order_status(1086880, '740A7AB7EB527908EB9507154CFAD389') }.not_to raise_error() }
+      it { UnifiedPayment::Client.get_order_status(1086880, '740A7AB7EB527908EB9507154CFAD389').should eq({"orderStatus"=>"CREATED", "orderId"=>"1086880", "xml_response"=>{"TKKPG"=>{"Response"=>{"Operation"=>"GetOrderStatus", "Status"=>"00", "Order"=>{"OrderID"=>"1086880", "OrderStatus"=>"CREATED"}}}}}) }
     end
 
     describe 'sends request along options' do
@@ -135,6 +136,7 @@ describe UnifiedPayment::Client do
       end
 
       it { expect { UnifiedPayment::Client.reverse(1086880, '740A7AB7EB527908EB9507154CFAD389') }.not_to raise_error() }
+      it { UnifiedPayment::Client.reverse(1086880, '740A7AB7EB527908EB9507154CFAD389').should eq({"orderId"=>"1086880", "respCode"=>"876", "respMessage"=>"resp-message", "xml_response"=>{"TKKPG"=>{"Response"=>{"Operation"=>"GetOrderStatus", "Status"=>"00", "Order"=>{"OrderID"=>"1086880", "OrderStatus"=>"CREATED"}, "Reversal"=>{"RespCode"=>"876", "RespMessage"=>"resp-message"}}}}}) }
     end
 
     describe 'sends request along options' do
