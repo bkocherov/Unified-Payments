@@ -14,10 +14,10 @@ class AddUnifiedPaymentTransactions < ActiveRecord::Migration
       t.string :pan
       t.string :approval_code
       t.text :xml_response
+      t.timestamps
     end
 
     add_index :unified_payment_transactions, [:gateway_order_id, :gateway_session_id], name: :order_session_index
     add_index :unified_payment_transactions, :response_status
-
   end
 end

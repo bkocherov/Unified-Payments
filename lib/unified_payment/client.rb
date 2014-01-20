@@ -84,6 +84,8 @@ module UnifiedPayment
         return { "url"          => response_order_details["URL"],
                  "sessionId"    => response_order_details["SessionID"],
                  "orderId"      => response_order_details["OrderID"],
+                 "Order"        => response_order_details,
+                 "Status"       => response["Status"],
                  "xml_response" => xml_response
                }
       else
