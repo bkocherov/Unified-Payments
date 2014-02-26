@@ -2,6 +2,7 @@ UnifiedPayment
 ================
 
 Provides the necessary library through UnifiedPayment::Client to interact with UnifiedPayment Gateway to
+
 -initiate a payment
 
 -get payment status
