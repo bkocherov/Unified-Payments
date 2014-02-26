@@ -2,13 +2,15 @@
 
 Provides the necessary library through UnifiedPayment::Client to interact with UnifiedPayment Gateway to
 -initiate a payment
+
 -get payment status
+
 -reverse a completed payment
 
 Also provides with MVC strucuture which can be extended according to the application.
 
 Credits
--------
+================
 
 [![vinsol.com: Ruby on Rails, iOS and Android developers](http://vinsol.com/vin_logo.png "Ruby on Rails, iOS and Android developers")](http://vinsol.com)
 
