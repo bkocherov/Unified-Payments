@@ -27,7 +27,7 @@ describe UnifiedPayment::Client do
       end
 
       it { expect { UnifiedPayment::Client.create_order(200)}.not_to raise_error() }
-      it { UnifiedPayment::Client.create_order(200).should eq({"url"=>"https://mpi.valucardnigeria.com:443/index.jsp", "sessionId"=>"740A7AB7EB527908EB9507154CFAD389", "orderId"=>"1086880", "xml_response"=>{"TKKPG"=>{"Response"=>{"Operation"=>"CreateOrder", "Status"=>"00", "Order"=>{"OrderID"=>"1086880", "SessionID"=>"740A7AB7EB527908EB9507154CFAD389", "URL"=>"https://mpi.valucardnigeria.com:443/index.jsp"}}}}}) }
+      it { UnifiedPayment::Client.create_order(200).should eq({"url"=>"https://mpi.valucardnigeria.com:443/index.jsp", "sessionId"=>"740A7AB7EB527908EB9507154CFAD389", "orderId"=>"1086880", "Order"=>{"OrderID"=>"1086880", "SessionID"=>"740A7AB7EB527908EB9507154CFAD389", "URL"=> "https://mpi.valucardnigeria.com:443/index.jsp"}, "Status"=>"00", "xml_response"=>{"TKKPG"=>{"Response"=>{"Operation"=>"CreateOrder", "Status"=>"00", "Order"=>{"OrderID"=>"1086880", "SessionID"=>"740A7AB7EB527908EB9507154CFAD389", "URL"=>"https://mpi.valucardnigeria.com:443/index.jsp"}}}}}) }
     end
 
     describe 'method calls' do
