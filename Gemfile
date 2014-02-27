@@ -1,6 +1,8 @@
 source "https://rubygems.org"
 gem 'rails', '3.2.16'
 gem 'mysql2'
+gem 'sqlite3'
+
 # Declare your gem's dependencies in unified_payment.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
 # development dependencies will be added by default to the :development group.

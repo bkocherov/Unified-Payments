@@ -3,6 +3,7 @@ PATH
   specs:
     unified_payment (1.0.0)
       rails (> 3.0)
+      sqlite3
 
 GEM
   remote: https://rubygems.org/
