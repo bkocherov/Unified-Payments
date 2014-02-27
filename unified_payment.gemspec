@@ -7,9 +7,9 @@ require "unified_payment/version"
 Gem::Specification.new do |s|
   s.name        = "unified_payment"
   s.version     = UnifiedPayment::VERSION
-  s.authors     = ["Manish Kangia"]
-  s.email       = ["manish.kangia@vinsol.com"]
-  # s.homepage    = "TODO"
+  s.author      = ["Manish Kangia", "Sushant Mittal"]
+  s.email       = ["info@vinsol.com"]
+  s.homepage    = "http://vinsol.com"
   s.summary     = "Interface to handle payments via UnifiedPayment for rails app."
   s.description = "Interface to handle payments via UnifiedPayment for rails app."
 
