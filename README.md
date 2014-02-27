@@ -11,6 +11,19 @@ Provides the necessary library through UnifiedPayment::Client to interact with U
 
 Also provides with MVC strucuture which can be extended according to the application.
 
+Set Up
+================
+
+Add To Gemfile:
+```ruby
+gem 'unified_payment', :git => "git@github.com:vinsol/Unified-Payments.git"
+```
+
+And run below command
+```ruby
+bundle exec rails g unified_payment:install
+```
+
 Credits
 ================
 
