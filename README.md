@@ -21,13 +21,15 @@ And run below command
 ```ruby
 bundle exec rails g unified_payment:install
 ```
-Also add your configurations in a yml file like this:
+Also add your configurations in a yml file. For example, here is
 
 ```ruby
 config/unified_payment.yml
+```
 
+```ruby
 merchant_name: 'Your Merchant name at gateway'
-base_uri: "http://127.0.0.1:5555" #or something else that you want to use.
+base_uri: "http://127.0.0.1:5555" #same as stunnel's accept port.
 ```
 
 Credits
