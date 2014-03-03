@@ -23,6 +23,14 @@ And run below command
 ```ruby
 bundle exec rails g unified_payment:install
 ```
+Also add your configurations in a yml file like this:
+
+```ruby
+config/unified_payment.yml
+
+merchant_name: 'Your Merchant name at gateway'
+base_uri: "http://127.0.0.1:5555" #or something else that you want to use.
+```
 
 Credits
 ================
