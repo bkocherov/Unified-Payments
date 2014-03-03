@@ -3,20 +3,18 @@ UnifiedPayment
 
 Provides the necessary library through UnifiedPayment::Client to interact with UnifiedPayment Gateway to
 
--initiate a payment
+1. Initiate a payment
+2. Get payment status
+3. Reverse a completed payment
 
--get payment status
-
--reverse a completed payment
-
-Also provides with MVC strucuture which can be extended according to the application.
+Also provides with MVC structure which can be extended according to the application.
 
 Set Up
 ================
 
 Add To Gemfile:
 ```ruby
-gem 'unified_payment', :git => "git@github.com:vinsol/Unified-Payments.git"
+gem 'unified_payment'
 ```
 
 And run below command
