@@ -1,5 +1,2 @@
 *.DS_Store
 /log/
-/config/database.yml
-/config/application.rb
-/app/controllers/unified_payment/application_controller.rb

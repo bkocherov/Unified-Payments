@@ -31,6 +31,14 @@ config/unified_payment.yml
 merchant_name: 'Your Merchant name at gateway'
 base_uri: "http://127.0.0.1:5555" #same as stunnel's accept port.
 ```
+To Run Specs
+================
+
+cd spec/dummy
+
+bundle exec rake db:setup RAILS_ENV=test
+bundle exec rspec spec
+bundle exec rake db:drop
 
 Credits
 ================
