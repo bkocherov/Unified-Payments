@@ -7,7 +7,16 @@ task :test_unified_payment do
   system 'ln -s ../../spec'
 
   puts 'setting up db with migration(s)'
-  system 'bundle exec rake db:setup RAILS_ENV=test'
+  
+  puts 'create db'
+  system 'bundle exec rake db:create RAILS_ENV=test'
+  
+  puts 'copy migration(s)'
+  require File.expand_path('../../lib/generators/unified_payment/install_generator')
+  UnifiedPayment::InstallGenerator.new.create_migrations
+  
+  puts 'running migrations...'
+  system 'bundle exec rake db:migrate RAILS_ENV=test'
 
   puts 'running specs...'
   system 'bundle exec rspec spec'
@@ -17,4 +26,7 @@ task :test_unified_payment do
 
   puts 'unlinking spec files...'
   system 'unlink spec'
+
+  puts 'removing db files...'
+  system 'rm -rf db'
 end
