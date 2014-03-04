@@ -19,7 +19,11 @@ gem 'unified_payment'
 
 And run below command
 ```ruby
+bundle
+
 bundle exec rails g unified_payment:install
+
+bundle exec rake db:migrate
 ```
 Also add your configurations in a yml file. For example, here is
 
@@ -34,6 +38,8 @@ base_uri: "http://127.0.0.1:5555" #same as stunnel's accept port.
 To Run Specs
 ================
 ```ruby
+bundle
+
 cd spec/dummy
 
 bundle exec rake db:setup RAILS_ENV=test
