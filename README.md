@@ -33,13 +33,15 @@ base_uri: "http://127.0.0.1:5555" #same as stunnel's accept port.
 ```
 To Run Specs
 ================
-
+```ruby
 cd spec/dummy
 
 bundle exec rake db:setup RAILS_ENV=test
-bundle exec rspec spec
-bundle exec rake db:drop
 
+bundle exec rspec spec
+
+bundle exec rake db:drop
+```
 Credits
 ================
 
