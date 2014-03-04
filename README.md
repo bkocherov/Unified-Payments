@@ -42,11 +42,8 @@ bundle
 
 cd spec/dummy
 
-bundle exec rake db:setup RAILS_ENV=test
+bundle exec rake test_unified_payment
 
-bundle exec rspec spec
-
-bundle exec rake db:drop
 ```
 Credits
 ================
