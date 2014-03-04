@@ -1,3 +1,5 @@
+#TODO -> We can make symlinks from original app for specs, migrations etc.
+
 require 'spec_helper'
 
 describe UnifiedPayment::Transaction do

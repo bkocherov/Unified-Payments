@@ -1,2 +1,3 @@
+#TODO -> Add log of dummy app in gitignore
 *.DS_Store
 /log/
