@@ -2,7 +2,6 @@ module UnifiedPayment
   class Transaction < ActiveRecord::Base
     include Utility
     self.table_name = "unified_payment_transactions"
-    attr_accessible :amount, :gateway_session_id, :gateway_order_id, :url, :merchant_id, :approval_code, :xml_response, :pan, :response_description, :response_status, :order_description, :currency, :gateway_order_status
   
     def self.create_order_at_unified(amount, options)
       3.times do |attempt|

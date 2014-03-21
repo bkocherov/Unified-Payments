@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-gem 'rails', '3.2.16'
+gem 'rails', '4.0.2'
 gem 'mysql2'
 
 # Declare your gem's dependencies in unified_payment.gemspec.
@@ -16,8 +16,8 @@ gemspec
 # gem 'debugger'
 gem 'httparty'
 group :test do
-  gem 'rspec-rails', '~> 2.10'
-  gem 'shoulda-matchers', '2.2.0'
+  gem 'rspec-rails'
+  gem 'shoulda-matchers'
   gem 'simplecov', :require => false
   gem 'database_cleaner'
   gem 'rspec-html-matchers'
