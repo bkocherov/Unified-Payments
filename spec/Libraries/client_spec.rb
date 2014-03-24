@@ -8,7 +8,7 @@ describe UnifiedPayment::Client do
     end
 
     context 'not able to reach gateway' do
-      it { expect { UnifiedPayment::Client.create_order(200)}.to raise_error(UnifiedPayment::Error, "################### Unable to send CreateOrder request to Unified Payments Ltd Connection refused - connect(2)") }
+      it { expect { UnifiedPayment::Client.create_order(200)}.to raise_error(UnifiedPayment::Error) }
     end
 
     context 'response status is not 00' do
@@ -80,7 +80,7 @@ describe UnifiedPayment::Client do
       Builder::XmlMarkup.stub(:new).and_return(@xml_builder)
     end
 
-    it { expect { UnifiedPayment::Client.get_order_status(1086880, '740A7AB7EB527908EB9507154CFAD389') }.to raise_error(UnifiedPayment::Error, '################### Unable to send GetOrderStatus request to Unified Payments Ltd Connection refused - connect(2)')}
+    it { expect { UnifiedPayment::Client.get_order_status(1086880, '740A7AB7EB527908EB9507154CFAD389') }.to raise_error(UnifiedPayment::Error) }
   
     context 'response status is not 00' do
       before do
@@ -118,7 +118,7 @@ describe UnifiedPayment::Client do
       Builder::XmlMarkup.stub(:new).and_return(@xml_builder)
     end
 
-    it { expect { UnifiedPayment::Client.reverse(1086880, '740A7AB7EB527908EB9507154CFAD389') }.to raise_error(UnifiedPayment::Error, '################### Unable to send Reverse request to Unified Payments Ltd Connection refused - connect(2)')}
+    it { expect { UnifiedPayment::Client.reverse(1086880, '740A7AB7EB527908EB9507154CFAD389') }.to raise_error(UnifiedPayment::Error) }
   
     context 'response status is not 00' do
       before do
