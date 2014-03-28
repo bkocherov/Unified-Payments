@@ -13,6 +13,7 @@ Set Up
 ================
 
 Add To Gemfile:
+
 For Rails 3 
 
 ```ruby
