@@ -13,6 +13,13 @@ Set Up
 ================
 
 Add To Gemfile:
+For Rails 3 
+
+```ruby
+gem 'unified_payment', '1.0.1'
+```
+
+For Rails 4
 ```ruby
 gem 'unified_payment', '1.1.0'
 ```
