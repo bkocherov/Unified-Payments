@@ -14,7 +14,7 @@ Set Up
 
 Add To Gemfile:
 ```ruby
-gem 'unified_payment'
+gem 'unified_payment', '1.1.0'
 ```
 
 And run below command
