@@ -6,7 +6,7 @@ module UnifiedPayment
     def self.create_order_at_unified(amount, options)
       3.times do |attempt|
         begin
-          @response = Client.create_order((amount.to_f)*100, options)
+          @response = stub_response#Client.create_order((amount.to_f)*100, options)
           create(:url => @response['url'], :gateway_order_id => @response['orderId'], :gateway_session_id => @response['sessionId'], :xml_response => @response['xml_response'].to_s)
           break
         rescue
