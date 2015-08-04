@@ -93,7 +93,7 @@ module UnifiedPayment
       end
     end
 
-    def self.build_xml_for(operation, order_id, session_id)
+    def self.build_xml_for(operation, merchant_id, order_id, session_id)
       xml_builder = Builder::XmlMarkup.new
       xml_builder.instruct!
       xml_builder.TKKPG { |tkkpg|
@@ -101,7 +101,7 @@ module UnifiedPayment
           request.Operation(operation)
           request.Language("EN")
           request.Order { |order|
-            order.Merchant(MERCHANT_NAME)
+            order.Merchant(merchant_id)
             order.OrderID(order_id) }
           request.SessionID(session_id)
         }
@@ -109,13 +109,13 @@ module UnifiedPayment
       xml_builder
     end
 
-    def self.send_request_for(operation, order_id, session_id)
-      xml_request = build_xml_for(operation, order_id, session_id)
+    def self.send_request_for(operation, merchant_id, order_id, session_id)
+      xml_request = build_xml_for(operation, merchant_id, order_id, session_id)
       ping_gateway_for(operation, xml_request)
     end
 
-    def self.get_order_status(order_id, session_id)
-      xml_response = send_request_for("GetOrderStatus", order_id, session_id)
+    def self.get_order_status(merchant_id, order_id, session_id)
+      xml_response = send_request_for("GetOrderStatus", merchant_id, order_id, session_id)
       response = xml_response["TKKPG"]["Response"]
 
       if response["Status"] == "00"
@@ -130,8 +130,8 @@ module UnifiedPayment
 
     end
 
-    def self.reverse(order_id, session_id)
-      xml_response = send_request_for("Reverse", order_id, session_id)
+    def self.reverse(merchant_id, order_id, session_id)
+      xml_response = send_request_for("Reverse", merchant_id, order_id, session_id)
       response = xml_response["TKKPG"]["Response"]
       if response["Status"] == "00"
         response_order_id, response_reversal_details = response["Order"]["OrderID"], response["Reversal"]

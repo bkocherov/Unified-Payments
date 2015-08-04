@@ -4,10 +4,18 @@ module UnifiedPayment
       get_unified_order_status == 'APPROVED' 
     end
 
-    private
     def get_unified_order_status
-      response = Client.get_order_status(gateway_order_id, gateway_session_id)
-      response['orderStatus']
+      begin
+        response = Client.get_order_status(merchant_id, gateway_order_id, gateway_session_id)
+      rescue
+        return false
+      end
+      if gateway_order_status != response['orderStatus']
+        self.gateway_order_status = response['orderStatus']
+        return gateway_order_status
+      else
+        return false
+      end
     end
   end 
 end
