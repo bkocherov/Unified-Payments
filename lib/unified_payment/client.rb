@@ -42,6 +42,7 @@ module UnifiedPayment
           request.Operation("CreateOrder")
           request.Language(options[:language] || "EN")
           request.Order { |order|
+            order.OrderType(options[:order_type] || 'Purchase')
             order.Merchant(MERCHANT_NAME)
             order.Amount(amount)
             order.Currency(options[:currency] || "566")
