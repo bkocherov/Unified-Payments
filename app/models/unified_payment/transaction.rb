@@ -17,6 +17,10 @@ module UnifiedPayment
       @response
     end
 
+    def compute_url
+      "#{url}?ORDERID=#{gateway_order_id}&SESSIONID=#{gateway_session_id}"
+    end
+
     def self.extract_url_for_unified_payment(response)
       response['url'] + '?' + 'ORDERID=' + response['orderId'] + '&' + 'SESSIONID=' + response['sessionId']
     end
